@@ -37,7 +37,7 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
-button, input { font-family: inherit; }
+button, input, textarea { font-family: inherit; }
 
 /* ---------- LOGIN ---------- */
 #pantallaLogin {
@@ -64,11 +64,11 @@ button, input { font-family: inherit; }
 .tarjetaLogin p.subtitulo { font-size: 12.5px; color: var(--texto-suave); margin-bottom: 26px; margin-top: 4px; }
 .campo { margin-bottom: 14px; text-align: left; }
 .campo label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--texto-suave); }
-.campo input {
+.campo input, .campo textarea, .campo select {
   width: 100%; padding: 12px 14px; border: 1.5px solid var(--gris-borde);
   border-radius: 9px; font-size: 14px; transition: border-color .15s ease;
 }
-.campo input:focus { outline: none; border-color: var(--rojo); }
+.campo input:focus, .campo textarea:focus, .campo select:focus { outline: none; border-color: var(--rojo); }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   border: none; border-radius: 9px; padding: 12px 18px;
@@ -80,6 +80,7 @@ button, input { font-family: inherit; }
 .btn-rojo { background: var(--rojo); color: #fff; width: 100%; margin-top: 8px; }
 .mensaje { border-radius: 8px; padding: 9px 11px; font-size: 12.5px; margin-bottom: 12px; display: none; text-align: left; }
 .mensaje.error { background: var(--rojo-suave); color: var(--rojo-oscuro); border: 1px solid #F3C6C6; }
+.mensaje.exito { background: var(--verde-suave); color: var(--verde); border: 1px solid #BFE6CE; }
 
 /* ---------- APP SHELL ---------- */
 #pantallaApp { display: none; min-height: 100vh; }
@@ -244,6 +245,31 @@ main.contenido { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; paddin
 .filaDiferencia { font-size: 12.5px; padding: 5px 0; border-bottom: 1px dashed #F3C6C6; }
 .filaDiferencia:last-child { border-bottom: none; }
 
+/* ---------- CORRECCIÓN DE ACTIVO (nuevo) ---------- */
+.panelCorreccion {
+  margin-top: 20px; border: 1px solid var(--gris-borde); border-radius: 10px;
+  padding: 18px 20px; background: #FAFBFC;
+}
+.panelCorreccion h3 { font-size: 13px; font-weight: 700; color: var(--azul); margin-bottom: 4px; display: flex; align-items: center; gap: 7px; }
+.panelCorreccion .descripCorreccion { font-size: 12px; color: var(--texto-suave); margin-bottom: 16px; }
+.rejillaCorreccion { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 560px) { .rejillaCorreccion { grid-template-columns: 1fr; } }
+.rejillaCorreccion .campo.completo { grid-column: 1 / -1; }
+.rejillaCorreccion .campo label { font-size: 11.5px; }
+.rejillaCorreccion .campo input, .rejillaCorreccion .campo select, .rejillaCorreccion .campo textarea {
+  padding: 10px 12px; font-size: 13px; border-radius: 8px;
+}
+.rejillaCorreccion .campo textarea { resize: vertical; min-height: 60px; }
+.filaBotonesCorreccion { display: flex; gap: 10px; margin-top: 14px; }
+.btnGuardarCorreccion { background: var(--verde); color: #fff; flex: 1; }
+.btnCancelarCorreccion { background: var(--blanco); color: var(--texto-suave); border: 1px solid var(--gris-borde); }
+.toggleCorreccion {
+  margin-top: 16px; width: 100%; background: var(--azul-suave); color: var(--azul);
+  border: none; border-radius: 8px; padding: 11px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+}
+.toggleCorreccion:hover { opacity: 0.85; }
+.metaCorreccion { font-size: 11.5px; color: var(--texto-suave); margin-top: 10px; }
+
 /* ---------- TABLAS ---------- */
 .encabezadoVista { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .encabezadoVista h1 { font-size: 19px; }
@@ -268,6 +294,12 @@ table.tablaDatos th.ordenDesc::after { content: " ▼"; font-size: 10px; }
 table.tablaDatos td { padding: 10px 12px; border-bottom: 1px solid var(--gris-borde); white-space: nowrap; }
 table.tablaDatos tr:last-child td { border-bottom: none; }
 table.tablaDatos tr:hover td { background: #FAFBFC; }
+table.tablaDatos td.colAccion { white-space: nowrap; }
+.btnFilaAccion {
+  background: var(--azul-suave); color: var(--azul); border: none; border-radius: 6px;
+  padding: 6px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+}
+.btnFilaAccion:hover { opacity: 0.85; }
 .badgeSiNo { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 12px; }
 .badgeSiNo.si { background: var(--verde-suave); color: var(--verde); }
 .badgeSiNo.no { background: var(--rojo-suave); color: var(--rojo-oscuro); }
@@ -337,7 +369,7 @@ footer.pieApp { text-align: center; padding: 18px; font-size: 12px; color: var(-
       <button class="item-menu" data-vista="noEncontrados" onclick="cambiarVista('noEncontrados')"><span class="icono">🟠</span> No encontrados</button>
       <button class="item-menu" data-vista="noRegistrados" onclick="cambiarVista('noRegistrados')"><span class="icono">🔴</span> No registrados</button>
     </nav>
-    <div class="pieLateral">Versión 2.0 · Fe y Alegría</div>
+    <div class="pieLateral">Versión 2.1 · Fe y Alegría</div>
   </aside>
 
   <div class="areaPrincipal">
@@ -409,7 +441,7 @@ footer.pieApp { text-align: center; padding: 18px; font-size: 12px; color: var(-
 
         <div class="notaFilosofia">
           <span>ℹ️</span>
-          <div><b>CARTERA</b> (Secretaría de Educación) es el catálogo oficial y nunca se modifica. <b>INVENTARIO</b> es la evidencia de campo levantada por la institución. Cada activo de CARTERA se enriquece automáticamente con su ubicación, estado y observaciones cuando existe evidencia física.</div>
+          <div><b>CARTERA</b> (Secretaría de Educación) es el catálogo oficial y nunca se modifica. <b>INVENTARIO</b> es la evidencia de campo levantada por la institución. Cada activo de CARTERA se enriquece automáticamente con su ubicación, estado y observaciones cuando existe evidencia física. Desde "Buscar activo" puede corregir puntualmente un activo (por ejemplo uno que no apareció en la revisión) sin necesidad de resincronizar todo.</div>
         </div>
       </section>
 
@@ -490,7 +522,7 @@ footer.pieApp { text-align: center; padding: 18px; font-size: 12px; color: var(-
         <div class="encabezadoVista">
           <div>
             <h1>🟠 Activos No Encontrados en Campo</h1>
-            <div class="descripVista">Existen en CARTERA (catálogo oficial) pero no aparecieron durante la revisión física.</div>
+            <div class="descripVista">Existen en CARTERA (catálogo oficial) pero no aparecieron durante la revisión física. Use "Corregir" para registrar su ubicación real.</div>
           </div>
           <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('noEncontrados', this.value)">
         </div>
@@ -535,8 +567,11 @@ let fechaUltimaSincronizacion = null;
    Todas las vistas (Dashboard, Coincide, Diferencias, No encontrados, No registrados)
    son filtros en memoria sobre la columna "Estado de conciliación".
    El HTML nunca compara ni recalcula nada: solo muestra lo que Apps Script ya
-   determinó al sincronizar. */
+   determinó al sincronizar (o al corregir un activo puntual). */
 let datosCompletos = [];
+
+/* Activo actualmente mostrado en la vista "Consultar Activo" (para poder corregirlo) */
+let registroConsultaActual = null;
 
 const estadoTablas = {
   todos: { filtro: "", ordenColumna: null, ordenAsc: true },
@@ -636,6 +671,7 @@ function obtenerNombreCorto(correo) {
 function cerrarSesion() {
   sesionActual = { correo: "", token: "" };
   datosCompletos = [];
+  registroConsultaActual = null;
   document.getElementById("pantallaApp").style.display = "none";
   document.getElementById("pantallaLogin").style.display = "flex";
   document.getElementById("inputCorreo").value = "";
@@ -848,10 +884,12 @@ function consultarCodigo() {
     .then(function (respuesta) {
       boton.disabled = false;
       if (!respuesta.exito) {
+        registroConsultaActual = null;
         contenedor.innerHTML = "<div class='estadoVacio'>" + respuesta.mensaje + "</div>";
         return;
       }
       guardarReciente(codigo);
+      registroConsultaActual = respuesta.registro;
       mostrarResultado(respuesta.registro);
     })
     .catch(function () {
@@ -862,6 +900,10 @@ function consultarCodigo() {
 
 function campoDiferente(detalle, etiquetaCampo) {
   return detalle.some(function (d) { return d.campo === etiquetaCampo; });
+}
+
+function escaparAtributo(valor) {
+  return String(valor === undefined || valor === null ? "" : valor).replace(/"/g, "&quot;");
 }
 
 function mostrarResultado(registro) {
@@ -902,7 +944,133 @@ function mostrarResultado(registro) {
     html += "</div>";
   }
 
+  html += "<button class='toggleCorreccion' id='btnAlternarCorreccion' onclick='alternarPanelCorreccion()'>✏️ Corregir este activo</button>";
+  html += "<div id='panelCorreccion' style='display:none;'></div>";
+
   contenedor.innerHTML = html;
+}
+
+/* ==================== CORRECCIÓN PUNTUAL DE ACTIVO (actualizarActivo) ====================
+   Conecta con la acción "actualizarActivo" de code.gs: único punto de escritura
+   permitido sobre INVENTARIO.xlsx. Útil especialmente para activos "No encontrado"
+   (se halló físicamente y hay que registrar su ubicación real) o para corregir
+   la ubicación/estado/observaciones de cualquier activo ya emparejado. */
+function alternarPanelCorreccion() {
+  const panel = document.getElementById("panelCorreccion");
+  if (!registroConsultaActual) return;
+
+  if (panel.style.display === "none") {
+    panel.innerHTML = construirFormularioCorreccion(registroConsultaActual);
+    panel.style.display = "block";
+    document.getElementById("btnAlternarCorreccion").textContent = "✖️ Ocultar formulario";
+  } else {
+    panel.style.display = "none";
+    panel.innerHTML = "";
+    document.getElementById("btnAlternarCorreccion").textContent = "✏️ Corregir este activo";
+  }
+}
+
+function construirFormularioCorreccion(registro) {
+  const v = function (campo) { return escaparAtributo(registro[campo]); };
+  return "" +
+    "<div class='panelCorreccion'>" +
+      "<h3>✏️ Corrección de evidencia de campo</h3>" +
+      "<p class='descripCorreccion'>Esto actualiza únicamente INVENTARIO.xlsx (nunca CARTERA) y recalcula de inmediato este activo en el Inventario General.</p>" +
+      "<div class='rejillaCorreccion'>" +
+        "<div class='campo'><label>Sede</label><input type='text' id='corrSede' value=\"" + v("Sede") + "\"></div>" +
+        "<div class='campo'><label>Bloque</label><input type='text' id='corrBloque' value=\"" + v("Bloque") + "\"></div>" +
+        "<div class='campo'><label>Piso</label><input type='text' id='corrPiso' value=\"" + v("Piso") + "\"></div>" +
+        "<div class='campo'><label>Aula</label><input type='text' id='corrAula' value=\"" + v("Aula") + "\"></div>" +
+        "<div class='campo completo'><label>Ubicación</label><input type='text' id='corrUbicacion' value=\"" + v("Ubicación") + "\"></div>" +
+        "<div class='campo'><label>Estado físico</label><input type='text' id='corrEstado' value=\"" + v("Estado físico") + "\"></div>" +
+        "<div class='campo completo'><label>Observaciones</label><textarea id='corrObservaciones'>" + (registro["Observaciones"] || "") + "</textarea></div>" +
+      "</div>" +
+      "<div class='mensaje error' id='errorCorreccion'></div>" +
+      "<div class='mensaje exito' id='exitoCorreccion'></div>" +
+      "<div class='filaBotonesCorreccion'>" +
+        "<button class='btn btnGuardarCorreccion' id='btnGuardarCorreccion' onclick='guardarCorreccion()'>Guardar corrección</button>" +
+        "<button class='btn btnCancelarCorreccion' onclick='alternarPanelCorreccion()'>Cancelar</button>" +
+      "</div>" +
+      "<div class='metaCorreccion'>Quedará registrado con su usuario (" + sesionActual.correo + ") y la fecha actual.</div>" +
+    "</div>";
+}
+
+function guardarCorreccion() {
+  if (!registroConsultaActual) return;
+
+  const boton = document.getElementById("btnGuardarCorreccion");
+  const errorBox = document.getElementById("errorCorreccion");
+  const exitoBox = document.getElementById("exitoCorreccion");
+  errorBox.style.display = "none";
+  exitoBox.style.display = "none";
+
+  const cuerpo = {
+    accion: "actualizarActivo",
+    correo: sesionActual.correo,
+    token: sesionActual.token,
+    activo: registroConsultaActual["Activo"],
+    inventario: registroConsultaActual["Inventario"],
+    sede: document.getElementById("corrSede").value.trim(),
+    bloque: document.getElementById("corrBloque").value.trim(),
+    piso: document.getElementById("corrPiso").value.trim(),
+    aula: document.getElementById("corrAula").value.trim(),
+    ubicacion: document.getElementById("corrUbicacion").value.trim(),
+    estado: document.getElementById("corrEstado").value.trim(),
+    observaciones: document.getElementById("corrObservaciones").value.trim()
+  };
+
+  boton.disabled = true;
+  boton.textContent = "Guardando...";
+
+  llamarApi(cuerpo)
+    .then(function (respuesta) {
+      boton.disabled = false;
+      boton.textContent = "Guardar corrección";
+      if (!respuesta.exito) {
+        errorBox.textContent = respuesta.mensaje;
+        errorBox.style.display = "block";
+        return;
+      }
+      exitoBox.textContent = "Activo actualizado correctamente.";
+      exitoBox.style.display = "block";
+
+      registroConsultaActual = respuesta.registro;
+      mostrarResultado(respuesta.registro);
+      actualizarRegistroEnMemoria(respuesta.registro);
+    })
+    .catch(function () {
+      boton.disabled = false;
+      boton.textContent = "Guardar corrección";
+      errorBox.textContent = "No fue posible guardar la corrección.";
+      errorBox.style.display = "block";
+    });
+}
+
+/* Refleja localmente (sin resincronizar todo) el resultado de actualizarActivo
+   en datosCompletos, para que Dashboard y todas las tablas queden al día. */
+function actualizarRegistroEnMemoria(registroActualizado) {
+  const claveActivo = String(registroActualizado["Activo"] || "").trim();
+  const claveInventario = String(registroActualizado["Inventario"] || "").trim();
+
+  const indice = datosCompletos.findIndex(function (r) {
+    const activoExistente = String(r["Activo"] || "").trim();
+    const inventarioExistente = String(r["Inventario"] || "").trim();
+    return activoExistente === claveActivo || (claveInventario && inventarioExistente === claveInventario);
+  });
+
+  if (indice !== -1) {
+    datosCompletos[indice] = registroActualizado;
+  } else {
+    datosCompletos.push(registroActualizado);
+  }
+
+  actualizarDashboard();
+  Object.keys(CONFIG_TABLAS).forEach(renderizarTabla);
+}
+
+/* Corregir directamente desde cualquier tabla (botón por fila) */
+function corregirDesdeTabla(activo, inventario) {
+  buscarCodigoDirecto(activo || inventario);
 }
 
 /* ==================== TABLAS (filtros en memoria sobre datosCompletos) ==================== */
@@ -963,7 +1131,7 @@ function renderizarTabla(clave) {
     let claseOrden = "";
     if (estado.ordenColumna === columna) claseOrden = estado.ordenAsc ? "ordenAsc" : "ordenDesc";
     return "<th class='" + claseOrden + "' onclick=\"ordenarTabla('" + clave + "','" + columna + "')\">" + columna + "</th>";
-  }).join("");
+  }).join("") + "<th>Acción</th>";
 
   let filas = datosBase;
   if (estado.filtro) {
@@ -994,12 +1162,15 @@ function renderizarTabla(clave) {
 
   const tbody = tabla.querySelector("tbody");
   if (filas.length === 0) {
-    tbody.innerHTML = "<tr><td colspan='" + columnas.length + "'>No se encontraron resultados.</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='" + (columnas.length + 1) + "'>No se encontraron resultados.</td></tr>";
   } else {
     tbody.innerHTML = filas.map(function (registro) {
       return "<tr>" + columnas.map(function (columna) {
         return "<td>" + formatearValorCelda(columna, registro[columna]) + "</td>";
-      }).join("") + "</tr>";
+      }).join("") +
+      "<td class='colAccion'><button class='btnFilaAccion' onclick=\"corregirDesdeTabla('" +
+        escaparAtributo(registro["Activo"]) + "','" + escaparAtributo(registro["Inventario"]) + "')\">Corregir</button></td>" +
+      "</tr>";
     }).join("");
   }
 
