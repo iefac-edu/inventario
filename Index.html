@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparador de Inventarios - Fe y Alegría La Cima</title>
+<style>
+  :root {
+    --rojo: #C81E2D;
+    --rojo-oscuro: #8E1420;
+    --verde: #1E7B4D;
+    --azul: #17335E;
+    --naranja: #E8A33D;
+    --gris-fondo: #F4F5F7;
+    --gris-borde: #E2E5EA;
+    --texto: #2B2E33;
+    --texto-suave: #6B7280;
+    --blanco: #FFFFFF;
+    --radio: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--gris-fondo);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* ---------- LOGIN ---------- */
+  #pantallaLogin {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--rojo-oscuro), var(--rojo));
+    padding: 20px;
+  }
+
+  .tarjetaLogin {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    text-align: center;
+  }
+
+  .tarjetaLogin .logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--rojo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: #fff;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .tarjetaLogin h1 {
+    font-size: 18px;
+    color: var(--rojo);
+    letter-spacing: 0.5px;
+  }
+
+  .tarjetaLogin p.subtitulo {
+    font-size: 12px;
+    color: var(--texto-suave);
+    margin-bottom: 24px;
+  }
+
+  .campo { margin-bottom: 14px; text-align: left; }
+
+  .campo label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--texto-suave);
+  }
+
+  .campo input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .campo input:focus { outline: none; border-color: var(--rojo); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .btn:hover { opacity: 0.88; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .btn-rojo { background: var(--rojo); color: #fff; width: 100%; margin-top: 6px; }
+  .btn-azul { background: var(--azul); color: #fff; }
+  .btn-verde { background: var(--verde); color: #fff; }
+  .btn-borde { background: transparent; color: var(--azul); border: 1px solid var(--azul); }
+
+  .mensajeError {
+    background: #FCEAEA;
+    color: var(--rojo-oscuro);
+    border: 1px solid #F3C6C6;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: none;
+  }
+
+  /* ---------- APP ---------- */
+  #pantallaApp { display: none; }
+
+  header.encabezado {
+    background: linear-gradient(90deg, var(--rojo-oscuro), var(--rojo));
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .marca { display: flex; align-items: center; gap: 12px; }
+
+  .marca .logo-circulo {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--rojo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .marca .nombre { font-size: 13px; line-height: 1.3; }
+  .marca .nombre strong { font-size: 15px; display: block; letter-spacing: 0.5px; }
+
+  .encabezado .titulo { text-align: left; flex: 1; min-width: 220px; }
+  .encabezado .titulo h1 { font-size: 20px; }
+  .encabezado .titulo p { font-size: 12px; opacity: 0.9; }
+
+  .aviso {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 11px;
+    max-width: 260px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .sesion { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .sesion button {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  main.contenido {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 280px 1fr 260px;
+    gap: 18px;
+  }
+
+  .panel {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 16px;
+  }
+
+  .panel h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--texto-suave);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .fuenteItem {
+    display: flex;
+    gap: 10px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .fuenteItem .icono {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background: var(--verde);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .fuenteItem .icono.azul { background: var(--azul); }
+
+  .fuenteItem .texto strong { font-size: 13px; display: block; }
+  .fuenteItem .texto span { font-size: 11px; color: var(--texto-suave); }
+
+  .cajaConsulta { margin-top: 4px; }
+
+  .cajaConsulta label {
+    font-size: 12px;
+    color: var(--texto-suave);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .filaBusqueda { display: flex; gap: 6px; margin-bottom: 10px; }
+  .filaBusqueda input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  .filaBusqueda button {
+    background: var(--rojo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 14px;
+    cursor: pointer;
+  }
+
+  select.selectorActivo {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 14px;
+  }
+
+  .infoBox {
+    background: #FCEAEA;
+    border: 1px solid #F3C6C6;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--rojo-oscuro);
+    margin-bottom: 12px;
+  }
+
+  .avisoLateral {
+    background: #FCEAEA;
+    border: 1px solid #F3C6C6;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 11px;
+    color: var(--rojo-oscuro);
+  }
+  .avisoLateral strong { display: block; margin-bottom: 4px; }
+
+  .actualizacionBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--texto-suave);
+  }
+
+  .actualizacionBox button {
+    background: var(--rojo);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  /* ---------- TARJETAS RESUMEN ---------- */
+  .filaTarjetas {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .tarjeta {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .tarjeta .icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .tarjeta .num { font-size: 22px; font-weight: 700; line-height: 1; }
+  .tarjeta .etiqueta { font-size: 11px; color: var(--texto-suave); }
+
+  .ic-rojo { background: var(--rojo); }
+  .ic-azul { background: var(--azul); }
+  .ic-naranja { background: var(--naranja); }
+  .ic-verde { background: var(--verde); }
+
+  /* ---------- RESULTADO ---------- */
+  .resultadoHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: var(--texto-suave);
+    letter-spacing: 0.5px;
+  }
+
+  .estadoConsulta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .estadoConsulta .codigo { font-size: 20px; font-weight: 700; color: var(--rojo); }
+
+  .badgeEstado {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  .badgeEstado.ambos { background: #E4F5EA; color: var(--verde); }
+  .badgeEstado.solo { background: #FDECD2; color: #A5651A; }
+  .badgeEstado.faltante { background: #FCEAEA; color: var(--rojo-oscuro); }
+
+  .comparativa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .bloqueFuente { border: 1px solid var(--gris-borde); border-radius: 10px; overflow: hidden; }
+
+  .bloqueFuente .cabeceraFuente {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .bloqueFuente.fisico .cabeceraFuente { background: var(--rojo); }
+  .bloqueFuente.sed .cabeceraFuente { background: var(--azul); }
+
+  .filaDato {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 14px;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--gris-borde);
+    gap: 10px;
+  }
+  .filaDato:last-of-type { border-bottom: none; }
+  .filaDato span.etiquetaDato { color: var(--texto-suave); }
+  .filaDato span.valorDato { text-align: right; font-weight: 600; }
+
+  .pieFuente {
+    padding: 9px 14px;
+    font-size: 11.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bloqueFuente.fisico .pieFuente { background: #FCEAEA; color: var(--rojo-oscuro); }
+  .bloqueFuente.sed .pieFuente { background: #E7ECF5; color: var(--azul); }
+
+  .valorDiferente { color: var(--rojo-oscuro); }
+
+  .tablaHistorial { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tablaHistorial th {
+    text-align: left;
+    color: var(--texto-suave);
+    font-weight: 600;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--gris-borde);
+  }
+  .tablaHistorial td {
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--gris-borde);
+  }
+
+  .estadoTexto { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; }
+  .estadoTexto.ambos { background: #E4F5EA; color: var(--verde); }
+  .estadoTexto.solo { background: #FDECD2; color: #A5651A; }
+
+  .verBtn { cursor: pointer; border: none; background: none; font-size: 14px; }
+
+  /* ---------- LATERAL DERECHO ---------- */
+  .pasoItem { display: flex; gap: 10px; margin-bottom: 14px; }
+  .pasoItem .num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--rojo); color: #fff; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .pasoItem p { font-size: 12px; color: var(--texto-suave); line-height: 1.4; }
+
+  .estadoVacio {
+    text-align: center;
+    padding: 40px 10px;
+    color: var(--texto-suave);
+    font-size: 13px;
+  }
+
+  footer.pieApp {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: var(--texto-suave);
+    font-style: italic;
+  }
+
+  .cargando { opacity: 0.6; pointer-events: none; }
+
+  @media (max-width: 1100px) {
+    main.contenido { grid-template-columns: 1fr; }
+    .filaTarjetas { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .comparativa { grid-template-columns: 1fr; }
+    .filaTarjetas { grid-template-columns: 1fr; }
+    .encabezado .aviso { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pantallaLogin">
+  <div class="tarjetaLogin">
+    <div class="logo">FA</div>
+    <h1>FE Y ALEGRÍA LA CIMA</h1>
+    <p class="subtitulo">Comparador de Inventarios · Acceso institucional</p>
+    <div class="mensajeError" id="errorLogin"></div>
+    <div class="campo">
+      <label>Correo institucional</label>
+      <input type="email" id="inputCorreo" placeholder="nombre@feyalegrialacima.edu.co">
+    </div>
+    <div class="campo">
+      <label>Token de acceso</label>
+      <input type="password" id="inputToken" placeholder="Token asignado">
+    </div>
+    <button class="btn btn-rojo" id="btnLogin" onclick="iniciarSesion()">Ingresar</button>
+  </div>
+</div>
+
+<div id="pantallaApp">
+  <header class="encabezado">
+    <div class="marca">
+      <div class="logo-circulo">FA</div>
+      <div class="nombre"><strong>FE Y ALEGRÍA</strong>LA CIMA · Institución Educativa</div>
+    </div>
+    <div class="titulo">
+      <h1>Comparador de Inventarios</h1>
+      <p>Verifique la existencia de códigos en ambos inventarios</p>
+    </div>
+    <div class="aviso">La claridad y exactitud en la comparación garantiza control, transparencia y confiabilidad en el inventario institucional.</div>
+    <div class="sesion">
+      <span id="correoSesion"></span>
+      <button onclick="cerrarSesion()">Salir</button>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <div class="filaTarjetas" id="filaTarjetas">
+      <div class="tarjeta"><div class="icono ic-rojo">📋</div><div><div class="num" id="numFisico">—</div><div class="etiqueta">Códigos en Inventario Físico (Excel 1)</div></div></div>
+      <div class="tarjeta"><div class="icono ic-azul">📄</div><div><div class="num" id="numSecretaria">—</div><div class="etiqueta">Códigos en Inventario SED (Excel 2)</div></div></div>
+      <div class="tarjeta"><div class="icono ic-naranja">⚠️</div><div><div class="num" id="numSoloFisico">—</div><div class="etiqueta">Solo en Inventario Físico (No están en SED)</div></div></div>
+      <div class="tarjeta"><div class="icono ic-verde">✔️</div><div><div class="num" id="numSoloSecretaria">—</div><div class="etiqueta">Solo en Inventario SED (No están en Físico)</div></div></div>
+    </div>
+
+    <aside class="panel">
+      <h2>Fuente de Datos</h2>
+      <div class="fuenteItem">
+        <div class="icono">XL</div>
+        <div class="texto"><strong>Excel 1 - Inventario Físico</strong><span>Inventario físico del colegio (plaquetado, ubicación, estado, etc.)</span></div>
+      </div>
+      <div class="fuenteItem">
+        <div class="icono azul">XL</div>
+        <div class="texto"><strong>Excel 2 - Inventario SED</strong><span>Códigos asignados por la Secretaría de Educación</span></div>
+      </div>
+
+      <h2 style="margin-top:20px;">Consulta de Código</h2>
+      <div class="cajaConsulta">
+        <label>Digite el número de inventario o selecciónelo de la lista</label>
+        <div class="filaBusqueda">
+          <input type="text" id="inputCodigo" placeholder="Ej: INV-2024-00876" onkeydown="if(event.key==='Enter') consultarCodigo()">
+          <button onclick="consultarCodigo()">🔍</button>
+        </div>
+        <select class="selectorActivo" id="selectorActivo">
+          <option value="">Seleccione un código...</option>
+        </select>
+      </div>
+
+      <div class="avisoLateral">
+        <strong>¿Qué se está comparando?</strong>
+        Se compara el código ingresado con ambos inventarios para verificar su existencia y obtener toda la información relacionada.
+      </div>
+
+      <div class="actualizacionBox">
+        <span id="fechaActualizacion">Última actualización: —</span>
+        <button onclick="sincronizar()" title="Sincronizar inventarios">🔄</button>
+      </div>
+    </aside>
+
+    <section class="panel" id="panelResultado">
+      <h2>🔎 Resultado de la Comparación</h2>
+      <div id="contenedorResultado">
+        <div class="estadoVacio">Digite un código de inventario para comenzar la consulta.</div>
+      </div>
+
+      <div style="margin-top:24px;">
+        <h2>🕐 Historial de Consultas Recientes</h2>
+        <table class="tablaHistorial">
+          <thead>
+            <tr><th>Fecha y hora</th><th>Código consultado</th><th>Resultado</th><th>Detalle</th></tr>
+          </thead>
+          <tbody id="cuerpoHistorial">
+            <tr><td colspan="4" style="color:#9AA0A6;text-align:center;padding:14px;">Sin consultas registradas aún</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h2>👤 ¿Cómo Usar?</h2>
+      <div class="pasoItem"><div class="num">1</div><p>Digite o seleccione el código de inventario que desea consultar.</p></div>
+      <div class="pasoItem"><div class="num">2</div><p>El sistema comparará automáticamente en ambos archivos.</p></div>
+      <div class="pasoItem"><div class="num">3</div><p>El resultado mostrará si el código está o no, y toda la información relacionada.</p></div>
+
+      <div class="avisoLateral" style="margin-top:16px;">
+        <strong>🛡️ IMPORTANTE</strong>
+        Verifique siempre los datos y mantenga los inventarios actualizados para garantizar resultados precisos.
+      </div>
+
+      <button class="btn btn-verde" style="width:100%;margin-top:16px;" onclick="generarDocumento()">📄 Generar Reporte PDF</button>
+    </aside>
+  </main>
+
+  <footer class="pieApp">"Formamos para la vida con honestidad y alegría" · Fe y Alegría</footer>
+</div>
+
+<script>
+const URL_API = "URL_DEL_DEPLOYMENT_DE_APPS_SCRIPT";
+
+let sesionActual = { correo: "", token: "" };
+let historialConsultas = [];
+
+function llamarApi(cuerpo) {
+  return fetch(URL_API, {
+    method: "POST",
+    body: JSON.stringify(cuerpo)
+  }).then(function (respuesta) { return respuesta.json(); });
+}
+
+function iniciarSesion() {
+  const correo = document.getElementById("inputCorreo").value.trim();
+  const token = document.getElementById("inputToken").value.trim();
+  const errorBox = document.getElementById("errorLogin");
+  const boton = document.getElementById("btnLogin");
+
+  errorBox.style.display = "none";
+
+  if (!correo || !token) {
+    errorBox.textContent = "Ingrese el correo y el token de acceso.";
+    errorBox.style.display = "block";
+    return;
+  }
+
+  boton.disabled = true;
+  boton.textContent = "Verificando...";
+
+  llamarApi({ accion: "login", correo: correo, token: token })
+    .then(function (respuesta) {
+      boton.disabled = false;
+      boton.textContent = "Ingresar";
+
+      if (!respuesta.exito) {
+        errorBox.textContent = respuesta.mensaje;
+        errorBox.style.display = "block";
+        return;
+      }
+
+      sesionActual = { correo: correo, token: token };
+      document.getElementById("correoSesion").textContent = correo;
+      document.getElementById("pantallaLogin").style.display = "none";
+      document.getElementById("pantallaApp").style.display = "block";
+      cargarResumen();
+    })
+    .catch(function () {
+      boton.disabled = false;
+      boton.textContent = "Ingresar";
+      errorBox.textContent = "No fue posible conectar con el sistema.";
+      errorBox.style.display = "block";
+    });
+}
+
+function cerrarSesion() {
+  sesionActual = { correo: "", token: "" };
+  document.getElementById("pantallaApp").style.display = "none";
+  document.getElementById("pantallaLogin").style.display = "flex";
+  document.getElementById("inputCorreo").value = "";
+  document.getElementById("inputToken").value = "";
+}
+
+function cargarResumen() {
+  llamarApi({ accion: "resumen", correo: sesionActual.correo, token: sesionActual.token })
+    .then(function (respuesta) {
+      if (!respuesta.exito) return;
+      const r = respuesta.resumen;
+      document.getElementById("numFisico").textContent = r["Total Físico"];
+      document.getElementById("numSecretaria").textContent = r["Total Secretaría"];
+      document.getElementById("numSoloFisico").textContent = r["Solo Físico"];
+      document.getElementById("numSoloSecretaria").textContent = r["Solo Secretaría"];
+      document.getElementById("fechaActualizacion").textContent = "Última actualización: " + r["Última Sincronización"];
+    });
+}
+
+function sincronizar() {
+  const boton = document.querySelector(".actualizacionBox button");
+  boton.disabled = true;
+  boton.textContent = "…";
+
+  llamarApi({ accion: "sincronizar", correo: sesionActual.correo, token: sesionActual.token })
+    .then(function (respuesta) {
+      boton.disabled = false;
+      boton.textContent = "🔄";
+      if (respuesta.exito) cargarResumen();
+    })
+    .catch(function () {
+      boton.disabled = false;
+      boton.textContent = "🔄";
+    });
+}
+
+function consultarCodigo() {
+  const codigo = document.getElementById("inputCodigo").value.trim();
+  if (!codigo) return;
+
+  const contenedor = document.getElementById("contenedorResultado");
+  contenedor.innerHTML = "<div class='estadoVacio'>Consultando...</div>";
+
+  llamarApi({ accion: "consultar", correo: sesionActual.correo, token: sesionActual.token, codigo: codigo })
+    .then(function (respuesta) {
+      if (!respuesta.exito) {
+        contenedor.innerHTML = "<div class='estadoVacio'>" + respuesta.mensaje + "</div>";
+        agregarHistorial(codigo, "No encontrado", respuesta.mensaje);
+        return;
+      }
+      mostrarResultado(respuesta.registro);
+      agregarHistorial(codigo, respuesta.registro["Estado"], "Estado: " + respuesta.registro["Estado"]);
+    });
+}
+
+function campoDiferente(detalle, nombreCampo) {
+  return detalle.some(function (d) { return d.campo === nombreCampo; });
+}
+
+function mostrarResultado(registro) {
+  const contenedor = document.getElementById("contenedorResultado");
+  const detalle = registro["Detalle Diferencias"] || [];
+  const estado = registro["Estado"];
+
+  let claseBadge = "ambos";
+  let textoBadge = "ESTÁ REGISTRADO EN AMBOS INVENTARIOS";
+  if (estado === "Solo Físico") { claseBadge = "solo"; textoBadge = "SOLO EXISTE EN INVENTARIO FÍSICO"; }
+  if (estado === "Solo Secretaría") { claseBadge = "solo"; textoBadge = "SOLO EXISTE EN INVENTARIO SED"; }
+
+  const mapaCampos = {
+    numeroInventario: "Número de Inventario",
+    sede: "Sede", bloque: "Bloque", piso: "Piso", aula: "Aula",
+    ubicacion: "Ubicación", novedades: "Novedades", revision: "Revisión"
+  };
+
+  function fila(etiqueta, valor, campoInterno) {
+    const esDiferente = campoInterno && campoDiferente(detalle, campoInterno);
+    return "<div class='filaDato'><span class='etiquetaDato'>" + etiqueta + "</span>" +
+      "<span class='valorDato" + (esDiferente ? " valorDiferente" : "") + "'>" + (valor || "—") + "</span></div>";
+  }
+
+  const html =
+    "<div class='resultadoHeader'>Código consultado</div>" +
+    "<div class='estadoConsulta'>" +
+      "<span class='codigo'>" + registro["Activo fijo"] + "</span>" +
+      "<span class='badgeEstado " + claseBadge + "'>" + textoBadge + "</span>" +
+    "</div>" +
+    "<div class='comparativa'>" +
+      "<div class='bloqueFuente fisico'>" +
+        "<div class='cabeceraFuente'>INFORMACIÓN EN INVENTARIO FÍSICO</div>" +
+        fila("Activo fijo", registro["Activo fijo"]) +
+        fila("N° Inventario", registro["Número de Inventario"], "numeroInventario") +
+        fila("Sede", registro["Sede"], "sede") +
+        fila("Bloque", registro["Bloque"], "bloque") +
+        fila("Piso", registro["Piso"], "piso") +
+        fila("Aula", registro["Aula"], "aula") +
+        fila("Ubicación", registro["Ubicación"], "ubicacion") +
+        fila("Novedades", registro["Novedades"], "novedades") +
+        "<div class='pieFuente'>" + (estado !== "Solo Secretaría" ? "✅ Encontrado en Inventario Físico" : "❌ No encontrado en Inventario Físico") + "</div>" +
+      "</div>" +
+      "<div class='bloqueFuente sed'>" +
+        "<div class='cabeceraFuente'>INFORMACIÓN EN INVENTARIO SED</div>" +
+        fila("Activo fijo", registro["Activo fijo"]) +
+        fila("N° Inventario", registro["Número de Inventario"], "numeroInventario") +
+        fila("Estado", registro["Estado"]) +
+        fila("Diferencias encontradas", registro["Diferencias encontradas"]) +
+        fila("Última Actualización", registro["Última Actualización"]) +
+        "<div class='pieFuente'>" + (estado !== "Solo Físico" ? "✅ Encontrado en Inventario SED" : "❌ No encontrado en Inventario SED") + "</div>" +
+      "</div>" +
+    "</div>";
+
+  contenedor.innerHTML = html;
+}
+
+function agregarHistorial(codigo, resultado, detalle) {
+  const fecha = new Date().toLocaleString();
+  historialConsultas.unshift({ fecha: fecha, codigo: codigo, resultado: resultado, detalle: detalle });
+  historialConsultas = historialConsultas.slice(0, 10);
+
+  const cuerpo = document.getElementById("cuerpoHistorial");
+  cuerpo.innerHTML = historialConsultas.map(function (item) {
+    const claseEstado = item.resultado === "Ambos" ? "ambos" : "solo";
+    return "<tr><td>" + item.fecha + "</td><td>" + item.codigo + "</td>" +
+      "<td><span class='estadoTexto " + claseEstado + "'>" + item.resultado + "</span></td>" +
+      "<td>" + item.detalle + "</td></tr>";
+  }).join("");
+}
+
+function generarDocumento() {
+  llamarApi({ accion: "generarDocumento", correo: sesionActual.correo, token: sesionActual.token })
+    .then(function (respuesta) {
+      if (respuesta.exito) {
+        window.open(respuesta.url, "_blank");
+      } else {
+        alert(respuesta.mensaje);
+      }
+    });
+}
+</script>
+
+</body>
+</html>
