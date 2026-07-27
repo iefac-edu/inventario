@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Consulta de Inventario - Fe y Alegría La Cima</title>
+<title>Consultor Inteligente de Inventarios - Fe y Alegría La Cima</title>
 <style>
   :root {
     --rojo: #C81E2D;
@@ -11,6 +11,7 @@
     --verde: #1E7B4D;
     --azul: #17335E;
     --naranja: #E8A33D;
+    --amarillo: #B8860B;
     --gris-fondo: #F4F5F7;
     --gris-borde: #E2E5EA;
     --texto: #2B2E33;
@@ -92,7 +93,6 @@
   .btn:hover { opacity: 0.88; }
   .btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-rojo { background: var(--rojo); color: #fff; width: 100%; margin-top: 6px; }
-  .btn-verde { background: var(--verde); color: #fff; }
 
   .mensaje {
     border-radius: 8px;
@@ -104,13 +104,13 @@
   .mensaje.error { background: #FCEAEA; color: var(--rojo-oscuro); border: 1px solid #F3C6C6; }
   .mensaje.exito { background: #E4F5EA; color: var(--verde); border: 1px solid #BFE6CE; }
 
-  /* ---------- APP ---------- */
-  #pantallaApp { display: none; }
+  /* ---------- APP SHELL ---------- */
+  #pantallaApp { display: none; min-height: 100vh; flex-direction: column; }
 
   header.encabezado {
     background: linear-gradient(90deg, var(--rojo-oscuro), var(--rojo));
     color: #fff;
-    padding: 16px 24px;
+    padding: 14px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -120,16 +120,16 @@
 
   .marca { display: flex; align-items: center; gap: 12px; }
   .marca .logo-circulo {
-    width: 46px; height: 46px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: #fff; color: var(--rojo);
     display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 18px; flex-shrink: 0;
+    font-weight: bold; font-size: 17px; flex-shrink: 0;
   }
   .marca .nombre { font-size: 13px; line-height: 1.3; }
   .marca .nombre strong { font-size: 15px; display: block; letter-spacing: 0.5px; }
 
   .sesion { display: flex; align-items: center; gap: 10px; font-size: 12px; flex-wrap: wrap; justify-content: flex-end; }
-  .sesion button, .sesion .enlace {
+  .sesion button {
     background: rgba(255,255,255,0.15);
     color: #fff;
     border: 1px solid rgba(255,255,255,0.4);
@@ -137,23 +137,95 @@
     padding: 7px 12px;
     font-size: 12px;
     cursor: pointer;
-    text-decoration: none;
+  }
+  .sesion button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  nav.menuPrincipal {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--gris-borde);
+    display: flex;
+    gap: 4px;
+    padding: 0 20px;
+    overflow-x: auto;
+  }
+  nav.menuPrincipal button {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 14px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto-suave);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  nav.menuPrincipal button.activo {
+    color: var(--rojo);
+    border-bottom-color: var(--rojo);
   }
 
   main.contenido {
-    max-width: 720px;
+    flex: 1;
+    max-width: 1150px;
+    width: 100%;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 28px 20px 50px;
   }
 
+  .vista { display: none; }
+  .vista.activa { display: block; }
+
+  .infoBarra {
+    font-size: 12px;
+    color: var(--texto-suave);
+    margin-bottom: 18px;
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  .rejillaTarjetas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+  }
+  .tarjetaIndicador {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    padding: 18px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+  .tarjetaIndicador:hover { border-color: var(--rojo); }
+  .tarjetaIndicador .etiqueta { font-size: 12px; color: var(--texto-suave); margin-bottom: 6px; }
+  .tarjetaIndicador .valor { font-size: 26px; font-weight: 700; color: var(--texto); }
+  .tarjetaIndicador.azul .valor { color: var(--azul); }
+  .tarjetaIndicador.verde .valor { color: var(--verde); }
+  .tarjetaIndicador.amarillo .valor { color: var(--amarillo); }
+  .tarjetaIndicador.naranja .valor { color: var(--naranja); }
+  .tarjetaIndicador.rojo .valor { color: var(--rojo); }
+
+  .notaFilosofia {
+    margin-top: 20px;
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-left: 4px solid var(--azul);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: var(--texto-suave);
+  }
+  .notaFilosofia b { color: var(--texto); }
+
+  /* ---------- CONSULTAR ACTIVO ---------- */
   .cajaCentral {
     background: var(--blanco);
     border: 1px solid var(--gris-borde);
     border-radius: var(--radio);
     padding: 30px;
     text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
   }
-
   .cajaCentral h1 { font-size: 20px; margin-bottom: 4px; color: var(--texto); }
   .cajaCentral p.instruccion { font-size: 13px; color: var(--texto-suave); margin-bottom: 20px; }
 
@@ -178,13 +250,6 @@
   }
   .filaBusqueda button:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  .infoSincronizacion {
-    margin-top: 16px;
-    font-size: 12px;
-    color: var(--texto-suave);
-  }
-
-  /* ---------- RESULTADO ---------- */
   #contenedorResultado { margin-top: 24px; text-align: left; }
 
   .estadoVacio {
@@ -204,13 +269,12 @@
   .estadoConsulta .codigo { font-size: 20px; font-weight: 700; color: var(--rojo); }
 
   .badgeEstado {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     padding: 4px 10px;
     border-radius: 20px;
+    background: var(--gris-fondo);
   }
-  .badgeEstado.ambos { background: #E4F5EA; color: var(--verde); }
-  .badgeEstado.solo { background: #FDECD2; color: #A5651A; }
 
   .tarjetaResultado {
     border: 1px solid var(--gris-borde);
@@ -251,6 +315,65 @@
   }
   .filaDiferencia:last-child { border-bottom: none; }
 
+  /* ---------- TABLAS ---------- */
+  .encabezadoVista {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .encabezadoVista h1 { font-size: 20px; }
+  .cajaBusquedaTabla {
+    padding: 10px 14px;
+    border: 1px solid var(--gris-borde);
+    border-radius: 8px;
+    font-size: 13px;
+    width: 260px;
+    max-width: 100%;
+  }
+  .cajaBusquedaTabla:focus { outline: none; border-color: var(--rojo); }
+
+  .envolturaTabla {
+    background: var(--blanco);
+    border: 1px solid var(--gris-borde);
+    border-radius: var(--radio);
+    overflow-x: auto;
+  }
+  table.tablaDatos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    min-width: 680px;
+  }
+  table.tablaDatos th {
+    background: var(--gris-fondo);
+    color: var(--texto);
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--gris-borde);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+  }
+  table.tablaDatos th:hover { color: var(--rojo); }
+  table.tablaDatos th.ordenAsc::after { content: " ▲"; font-size: 10px; }
+  table.tablaDatos th.ordenDesc::after { content: " ▼"; font-size: 10px; }
+  table.tablaDatos td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--gris-borde);
+    white-space: nowrap;
+  }
+  table.tablaDatos tr:last-child td { border-bottom: none; }
+  table.tablaDatos tr:hover td { background: #FAFBFC; }
+
+  .badgeSiNo { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 12px; }
+  .badgeSiNo.si { background: #E4F5EA; color: var(--verde); }
+  .badgeSiNo.no { background: #FCEAEA; color: var(--rojo-oscuro); }
+
+  .contadorFilas { font-size: 12px; color: var(--texto-suave); margin-top: 10px; }
+
   footer.pieApp {
     text-align: center;
     padding: 16px;
@@ -262,6 +385,8 @@
   @media (max-width: 560px) {
     .filaBusqueda { flex-direction: column; }
     .sesion { justify-content: center; width: 100%; }
+    .encabezadoVista { flex-direction: column; align-items: stretch; }
+    .cajaBusquedaTabla { width: 100%; }
   }
 </style>
 </head>
@@ -271,7 +396,7 @@
   <div class="tarjetaLogin">
     <div class="logo">FA</div>
     <h1>FE Y ALEGRÍA LA CIMA</h1>
-    <p class="subtitulo">Consulta de Inventario · Acceso institucional</p>
+    <p class="subtitulo">Consultor Inteligente de Inventarios</p>
     <div class="mensaje error" id="errorLogin"></div>
     <div class="campo">
       <label>Correo institucional</label>
@@ -289,7 +414,7 @@
   <header class="encabezado">
     <div class="marca">
       <div class="logo-circulo">FA</div>
-      <div class="nombre"><strong>FE Y ALEGRÍA</strong>LA CIMA · Institución Educativa</div>
+      <div class="nombre"><strong>FE Y ALEGRÍA</strong>LA CIMA · Consultor de Inventarios</div>
     </div>
     <div class="sesion">
       <span id="correoSesion"></span>
@@ -298,22 +423,125 @@
     </div>
   </header>
 
+  <nav class="menuPrincipal">
+    <button class="item-menu activo" data-vista="dashboard" onclick="cambiarVista('dashboard')">Dashboard</button>
+    <button class="item-menu" data-vista="consultar" onclick="cambiarVista('consultar')">Consultar Activo</button>
+    <button class="item-menu" data-vista="todos" onclick="cambiarVista('todos')">Inventario General</button>
+    <button class="item-menu" data-vista="coincide" onclick="cambiarVista('coincide')">🟢 Coinciden</button>
+    <button class="item-menu" data-vista="diferencias" onclick="cambiarVista('diferencias')">🟡 Con diferencias</button>
+    <button class="item-menu" data-vista="noEncontrados" onclick="cambiarVista('noEncontrados')">🟠 No encontrados</button>
+    <button class="item-menu" data-vista="noRegistrados" onclick="cambiarVista('noRegistrados')">🔴 No registrados</button>
+  </nav>
+
   <main class="contenido">
-    <div class="cajaCentral">
-      <h1>Consulta de Activos</h1>
-      <p class="instruccion">Escriba el código de inventario para verificar su existencia y su información.</p>
 
-      <div class="filaBusqueda">
-        <input type="text" id="inputCodigo" placeholder="Ej: INV-2024-00876" onkeydown="if(event.key==='Enter') consultarCodigo()">
-        <button onclick="consultarCodigo()" id="btnConsultar">Consultar</button>
+    <!-- ---------- DASHBOARD ---------- -->
+    <section class="vista activa" id="vistaDashboard">
+      <div class="infoBarra" id="infoSincronizacion">Aún no se ha sincronizado la información.</div>
+      <div class="rejillaTarjetas" id="rejillaTarjetas">
+        <div class="estadoVacio">Presione "Sincronizar inventarios" para cargar el panel.</div>
       </div>
-
-      <div class="infoSincronizacion" id="infoSincronizacion"></div>
-
-      <div id="contenedorResultado">
-        <div class="estadoVacio">Aún no ha realizado ninguna consulta.</div>
+      <div class="notaFilosofia">
+        <b>CARTERA</b> (Secretaría de Educación) es el catálogo oficial y nunca se modifica.
+        <b>INVENTARIO</b> es la evidencia de campo levantada por la institución. Cada activo de CARTERA
+        se enriquece automáticamente con su ubicación, estado y observaciones cuando existe evidencia física.
       </div>
-    </div>
+    </section>
+
+    <!-- ---------- CONSULTAR ACTIVO ---------- -->
+    <section class="vista" id="vistaConsultar">
+      <div class="cajaCentral">
+        <h1>Consulta de Activos</h1>
+        <p class="instruccion">Escriba el activo fijo o el número de inventario para ver su información completa y su estado de conciliación.</p>
+
+        <div class="filaBusqueda">
+          <input type="text" id="inputCodigo" placeholder="Ej: 300111491" onkeydown="if(event.key==='Enter') consultarCodigo()">
+          <button onclick="consultarCodigo()" id="btnConsultar">Consultar</button>
+        </div>
+
+        <div id="contenedorResultado">
+          <div class="estadoVacio">Aún no ha realizado ninguna consulta.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- INVENTARIO GENERAL (TODOS) ---------- -->
+    <section class="vista" id="vistaTodos">
+      <div class="encabezadoVista">
+        <h1>Inventario General</h1>
+        <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('todos', this.value)">
+      </div>
+      <div class="envolturaTabla">
+        <table class="tablaDatos" id="tablaTodos">
+          <thead><tr></tr></thead>
+          <tbody><tr><td>Sincronice para ver información.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="contadorFilas" id="contadorTodos"></div>
+    </section>
+
+    <!-- ---------- COINCIDE ---------- -->
+    <section class="vista" id="vistaCoincide">
+      <div class="encabezadoVista">
+        <h1>🟢 Activos que Coinciden</h1>
+        <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('coincide', this.value)">
+      </div>
+      <div class="envolturaTabla">
+        <table class="tablaDatos" id="tablaCoincide">
+          <thead><tr></tr></thead>
+          <tbody><tr><td>Sincronice para ver información.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="contadorFilas" id="contadorCoincide"></div>
+    </section>
+
+    <!-- ---------- DIFERENCIAS ---------- -->
+    <section class="vista" id="vistaDiferencias">
+      <div class="encabezadoVista">
+        <h1>🟡 Activos con Diferencias</h1>
+        <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('diferencias', this.value)">
+      </div>
+      <div class="envolturaTabla">
+        <table class="tablaDatos" id="tablaDiferencias">
+          <thead><tr></tr></thead>
+          <tbody><tr><td>Sincronice para ver información.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="contadorFilas" id="contadorDiferencias"></div>
+    </section>
+
+    <!-- ---------- NO ENCONTRADOS ---------- -->
+    <section class="vista" id="vistaNoEncontrados">
+      <div class="encabezadoVista">
+        <h1>🟠 Activos No Encontrados en Campo</h1>
+        <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('noEncontrados', this.value)">
+      </div>
+      <div class="infoBarra">Existen en CARTERA (catálogo oficial) pero no aparecieron durante la revisión física.</div>
+      <div class="envolturaTabla">
+        <table class="tablaDatos" id="tablaNoEncontrados">
+          <thead><tr></tr></thead>
+          <tbody><tr><td>Sincronice para ver información.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="contadorFilas" id="contadorNoEncontrados"></div>
+    </section>
+
+    <!-- ---------- NO REGISTRADOS ---------- -->
+    <section class="vista" id="vistaNoRegistrados">
+      <div class="encabezadoVista">
+        <h1>🔴 Activos No Registrados</h1>
+        <input type="text" class="cajaBusquedaTabla" placeholder="Buscar..." oninput="filtrarTabla('noRegistrados', this.value)">
+      </div>
+      <div class="infoBarra">Aparecieron en la revisión física pero no existen en el catálogo oficial de CARTERA. Pendientes de validar con Secretaría.</div>
+      <div class="envolturaTabla">
+        <table class="tablaDatos" id="tablaNoRegistrados">
+          <thead><tr></tr></thead>
+          <tbody><tr><td>Sincronice para ver información.</td></tr></tbody>
+        </table>
+      </div>
+      <div class="contadorFilas" id="contadorNoRegistrados"></div>
+    </section>
+
   </main>
 
   <footer class="pieApp">"Formamos para la vida con honestidad y alegría" · Fe y Alegría</footer>
@@ -324,12 +552,46 @@ const URL_API = "https://script.google.com/macros/s/AKfycbx-9NdvKRkkfspAEuIJNsgv
 
 let sesionActual = { correo: "", token: "" };
 
+/*
+  Fuente única de verdad en el cliente: el arreglo completo devuelto por
+  "listarGeneral". Todas las vistas (Dashboard, Coincide, Diferencias,
+  No encontrados, No registrados) son filtros en memoria sobre la columna
+  "Estado de conciliación". El HTML nunca compara ni recalcula nada: solo
+  muestra lo que Apps Script ya determinó al sincronizar.
+*/
+let datosCompletos = [];
+
+const estadoTablas = {
+  todos: { filtro: "", ordenColumna: null, ordenAsc: true },
+  coincide: { filtro: "", ordenColumna: null, ordenAsc: true },
+  diferencias: { filtro: "", ordenColumna: null, ordenAsc: true },
+  noEncontrados: { filtro: "", ordenColumna: null, ordenAsc: true },
+  noRegistrados: { filtro: "", ordenColumna: null, ordenAsc: true }
+};
+
+const RESULTADO_FILTRO = {
+  coincide: "🟢 Coincide",
+  diferencias: "🟡 Tiene diferencias",
+  noEncontrados: "🟠 No encontrado",
+  noRegistrados: "🔴 Activo no registrado"
+};
+
+const CONFIG_TABLAS = {
+  todos: { idTabla: "tablaTodos", idContador: "contadorTodos" },
+  coincide: { idTabla: "tablaCoincide", idContador: "contadorCoincide" },
+  diferencias: { idTabla: "tablaDiferencias", idContador: "contadorDiferencias" },
+  noEncontrados: { idTabla: "tablaNoEncontrados", idContador: "contadorNoEncontrados" },
+  noRegistrados: { idTabla: "tablaNoRegistrados", idContador: "contadorNoRegistrados" }
+};
+
 function llamarApi(cuerpo) {
   return fetch(URL_API, {
     method: "POST",
     body: JSON.stringify(cuerpo)
   }).then(function (respuesta) { return respuesta.json(); });
 }
+
+/* ==================== LOGIN / SESIÓN ==================== */
 
 function iniciarSesion() {
   const correo = document.getElementById("inputCorreo").value.trim();
@@ -358,12 +620,13 @@ function iniciarSesion() {
         errorBox.style.display = "block";
         return;
       }
-      
 
       sesionActual = { correo: correo, token: token };
       document.getElementById("correoSesion").textContent = correo;
       document.getElementById("pantallaLogin").style.display = "none";
-      document.getElementById("pantallaApp").style.display = "block";
+      document.getElementById("pantallaApp").style.display = "flex";
+
+      cargarDatos();
     })
     .catch(function () {
       boton.disabled = false;
@@ -375,18 +638,55 @@ function iniciarSesion() {
 
 function cerrarSesion() {
   sesionActual = { correo: "", token: "" };
+  datosCompletos = [];
   document.getElementById("pantallaApp").style.display = "none";
   document.getElementById("pantallaLogin").style.display = "flex";
   document.getElementById("inputCorreo").value = "";
   document.getElementById("inputToken").value = "";
 }
 
+/* ==================== NAVEGACIÓN ==================== */
+
+function cambiarVista(nombreVista) {
+  document.querySelectorAll(".vista").forEach(function (el) { el.classList.remove("activa"); });
+  document.querySelectorAll(".item-menu").forEach(function (el) { el.classList.remove("activo"); });
+
+  const mapaVistas = {
+    dashboard: "vistaDashboard",
+    consultar: "vistaConsultar",
+    todos: "vistaTodos",
+    coincide: "vistaCoincide",
+    diferencias: "vistaDiferencias",
+    noEncontrados: "vistaNoEncontrados",
+    noRegistrados: "vistaNoRegistrados"
+  };
+
+  document.getElementById(mapaVistas[nombreVista]).classList.add("activa");
+  document.querySelector('.item-menu[data-vista="' + nombreVista + '"]').classList.add("activo");
+}
+
+/* ==================== CARGA Y SINCRONIZACIÓN ==================== */
+
+function cargarDatos() {
+  llamarApi({ accion: "listarGeneral", correo: sesionActual.correo, token: sesionActual.token })
+    .then(function (respuesta) {
+      if (!respuesta.exito) {
+        document.getElementById("infoSincronizacion").textContent = respuesta.mensaje;
+        return;
+      }
+      datosCompletos = respuesta.registros || [];
+      actualizarDashboard();
+      Object.keys(CONFIG_TABLAS).forEach(renderizarTabla);
+    })
+    .catch(function () {
+      document.getElementById("infoSincronizacion").textContent = "No fue posible cargar la información.";
+    });
+}
+
 function sincronizar() {
   const boton = document.getElementById("btnSincronizar");
-  const info = document.getElementById("infoSincronizacion");
   boton.disabled = true;
   boton.textContent = "Sincronizando...";
-  info.textContent = "";
 
   llamarApi({ accion: "sincronizar", correo: sesionActual.correo, token: sesionActual.token })
     .then(function (respuesta) {
@@ -394,25 +694,66 @@ function sincronizar() {
       boton.textContent = "Sincronizar inventarios";
 
       if (!respuesta.exito) {
-        info.textContent = respuesta.mensaje;
+        document.getElementById("infoSincronizacion").textContent = respuesta.mensaje;
         return;
       }
 
-      let texto = "Última sincronización: " + new Date(respuesta.fecha).toLocaleString() +
-        " · " + respuesta.totalRegistros + " activos procesados.";
-      if (respuesta.urlDocumento) {
-        texto += " ";
-        info.innerHTML = texto + "<a href='" + respuesta.urlDocumento + "' target='_blank'>Ver reporte de comparación</a>";
-      } else {
-        info.textContent = texto;
-      }
+      document.getElementById("infoSincronizacion").textContent =
+        "Última sincronización: " + new Date(respuesta.fecha).toLocaleString() +
+        " · " + respuesta.totalRegistros + " activos del catálogo oficial procesados.";
+
+      cargarDatos();
     })
     .catch(function () {
       boton.disabled = false;
       boton.textContent = "Sincronizar inventarios";
-      info.textContent = "No fue posible completar la sincronización.";
+      document.getElementById("infoSincronizacion").textContent = "No fue posible completar la sincronización.";
     });
 }
+
+/* ==================== DASHBOARD (calculado en memoria sobre datosCompletos) ==================== */
+
+function actualizarDashboard() {
+  const rejilla = document.getElementById("rejillaTarjetas");
+
+  if (datosCompletos.length === 0) {
+    rejilla.innerHTML = "<div class='estadoVacio'>Aún no hay información sincronizada.</div>";
+    return;
+  }
+
+  const contadores = { coincide: 0, diferencias: 0, noEncontrados: 0, noRegistrados: 0 };
+
+  datosCompletos.forEach(function (registro) {
+    const resultado = registro["Estado de conciliación"];
+    if (resultado === RESULTADO_FILTRO.coincide) contadores.coincide++;
+    if (resultado === RESULTADO_FILTRO.diferencias) contadores.diferencias++;
+    if (resultado === RESULTADO_FILTRO.noEncontrados) contadores.noEncontrados++;
+    if (resultado === RESULTADO_FILTRO.noRegistrados) contadores.noRegistrados++;
+  });
+
+  const totalCartera = datosCompletos.filter(function (r) { return r["Existe oficialmente"] === "Sí"; }).length;
+  const fechaSincronizacion = datosCompletos[0]["Última sincronización"];
+
+  document.getElementById("infoSincronizacion").textContent =
+    "Última sincronización: " + (fechaSincronizacion ? new Date(fechaSincronizacion).toLocaleString() : "—") +
+    " · " + totalCartera + " activos oficiales en catálogo.";
+
+  rejilla.innerHTML =
+    tarjeta("Total en CARTERA", totalCartera, "azul", "todos") +
+    tarjeta("🟢 Coinciden", contadores.coincide, "verde", "coincide") +
+    tarjeta("🟡 Con diferencias", contadores.diferencias, "amarillo", "diferencias") +
+    tarjeta("🟠 No encontrados", contadores.noEncontrados, "naranja", "noEncontrados") +
+    tarjeta("🔴 No registrados", contadores.noRegistrados, "rojo", "noRegistrados");
+}
+
+function tarjeta(etiqueta, valor, clase, vistaDestino) {
+  return "<div class='tarjetaIndicador " + clase + "' onclick=\"cambiarVista('" + vistaDestino + "')\">" +
+    "<div class='etiqueta'>" + etiqueta + "</div>" +
+    "<div class='valor'>" + valor + "</div>" +
+    "</div>";
+}
+
+/* ==================== CONSULTAR ACTIVO ==================== */
 
 function consultarCodigo() {
   const codigo = document.getElementById("inputCodigo").value.trim();
@@ -438,69 +779,158 @@ function consultarCodigo() {
     });
 }
 
-function campoDiferente(detalle, nombreCampo) {
-  return detalle.some(function (d) { return d.campo === nombreCampo; });
+function campoDiferente(detalle, etiquetaCampo) {
+  return detalle.some(function (d) { return d.campo === etiquetaCampo; });
 }
-
-const ETIQUETAS_CAMPO = {
-  numeroInventario: "Número de Inventario",
-  descripcion: "Descripción",
-  sede: "Sede",
-  bloque: "Bloque",
-  piso: "Piso",
-  aula: "Aula",
-  ubicacion: "Ubicación",
-  estadoBien: "Estado del Bien",
-  observaciones: "Observaciones",
-  ultimaRevision: "Última Revisión"
-};
 
 function mostrarResultado(registro) {
   const contenedor = document.getElementById("contenedorResultado");
-  const detalle = registro["Detalle Diferencias"] || [];
-  const estado = registro["Estado"];
+  const detalle = registro["Diferencias"] || [];
+  const resultado = registro["Estado de conciliación"];
 
-  let claseBadge = "ambos";
-  let textoBadge = "Existe en ambos inventarios";
-  if (estado === "Solo Físico") { claseBadge = "solo"; textoBadge = "Solo existe en el inventario físico"; }
-  if (estado === "Solo Secretaría") { claseBadge = "solo"; textoBadge = "Solo existe en el inventario de Secretaría"; }
-
-  function fila(etiqueta, valor, campoInterno) {
-    const esDiferente = campoInterno && campoDiferente(detalle, campoInterno);
+  function fila(etiqueta, valor) {
+    const esDiferente = campoDiferente(detalle, etiqueta);
     return "<div class='filaDato'><span class='etiquetaDato'>" + etiqueta + "</span>" +
       "<span class='valorDato" + (esDiferente ? " valorDiferente" : "") + "'>" + (valor || "—") + "</span></div>";
   }
 
   let html =
     "<div class='estadoConsulta'>" +
-      "<span class='codigo'>" + registro["Activo fijo"] + "</span>" +
-      "<span class='badgeEstado " + claseBadge + "'>" + textoBadge + "</span>" +
+      "<span class='codigo'>" + registro["Activo"] + "</span>" +
+      "<span class='badgeEstado'>" + resultado + "</span>" +
     "</div>" +
     "<div class='tarjetaResultado'>" +
-      fila("Activo fijo", registro["Activo fijo"]) +
-      fila(ETIQUETAS_CAMPO.numeroInventario, registro["Número de Inventario"], "numeroInventario") +
-      fila(ETIQUETAS_CAMPO.descripcion, registro["Descripción"], "descripcion") +
-      fila(ETIQUETAS_CAMPO.sede, registro["Sede"], "sede") +
-      fila(ETIQUETAS_CAMPO.bloque, registro["Bloque"], "bloque") +
-      fila(ETIQUETAS_CAMPO.piso, registro["Piso"], "piso") +
-      fila(ETIQUETAS_CAMPO.aula, registro["Aula"], "aula") +
-      fila(ETIQUETAS_CAMPO.ubicacion, registro["Ubicación"], "ubicacion") +
-      fila(ETIQUETAS_CAMPO.estadoBien, registro["Estado del Bien"], "estadoBien") +
-      fila(ETIQUETAS_CAMPO.observaciones, registro["Observaciones"], "observaciones") +
-      fila(ETIQUETAS_CAMPO.ultimaRevision, registro["Última Revisión"], "ultimaRevision") +
+      fila("Activo", registro["Activo"]) +
+      fila("Inventario", registro["Inventario"]) +
+      fila("Denominación", registro["Denominación"]) +
+      fila("Sede", registro["Sede"]) +
+      fila("Bloque", registro["Bloque"]) +
+      fila("Piso", registro["Piso"]) +
+      fila("Aula", registro["Aula"]) +
+      fila("Ubicación", registro["Ubicación"]) +
+      fila("Estado físico", registro["Estado físico"]) +
+      fila("Observaciones", registro["Observaciones"]) +
+      fila("Revisado", registro["Revisado"]) +
     "</div>";
 
   if (detalle.length > 0) {
     html += "<div class='bloqueDiferencias'><h3>Diferencias encontradas</h3>";
     detalle.forEach(function (d) {
-      const etiqueta = ETIQUETAS_CAMPO[d.campo] || d.campo;
-      html += "<div class='filaDiferencia'><b>" + etiqueta + ":</b> Físico = " + (d.valorFisico || "—") +
-        " · Secretaría = " + (d.valorSecretaria || "—") + "</div>";
+      html += "<div class='filaDiferencia'><b>" + d.campo + ":</b> Evidencia de campo = " + (d.valorInventario || "—") +
+        " · Catálogo oficial = " + (d.valorOficial || "—") + "</div>";
     });
     html += "</div>";
   }
 
   contenedor.innerHTML = html;
+}
+
+/* ==================== TABLAS (filtros en memoria sobre datosCompletos) ==================== */
+
+function obtenerDatosVista(clave) {
+  if (clave === "todos") return datosCompletos;
+  const resultadoEsperado = RESULTADO_FILTRO[clave];
+  return datosCompletos.filter(function (registro) { return registro["Estado de conciliación"] === resultadoEsperado; });
+}
+
+function filtrarTabla(clave, texto) {
+  estadoTablas[clave].filtro = texto.toLowerCase().trim();
+  renderizarTabla(clave);
+}
+
+function ordenarTabla(clave, columna) {
+  const estado = estadoTablas[clave];
+  if (estado.ordenColumna === columna) {
+    estado.ordenAsc = !estado.ordenAsc;
+  } else {
+    estado.ordenColumna = columna;
+    estado.ordenAsc = true;
+  }
+  renderizarTabla(clave);
+}
+
+function formatearValorCelda(columna, valor) {
+  if (columna === "Diferencias") {
+    if (!Array.isArray(valor) || valor.length === 0) return "Ninguna";
+    return valor.map(function (d) { return d.campo; }).join(", ");
+  }
+  if (typeof valor === "string" && /^\d{4}-\d{2}-\d{2}T/.test(valor)) {
+    return new Date(valor).toLocaleString();
+  }
+  if (columna.indexOf("Existe") === 0) {
+    const esSi = valor === "Sí";
+    return "<span class='badgeSiNo " + (esSi ? "si" : "no") + "'>" + valor + "</span>";
+  }
+  return (valor === undefined || valor === null || valor === "") ? "—" : valor;
+}
+
+function renderizarTabla(clave) {
+  const config = CONFIG_TABLAS[clave];
+  const estado = estadoTablas[clave];
+  const tabla = document.getElementById(config.idTabla);
+  const datosBase = obtenerDatosVista(clave);
+
+  if (datosBase.length === 0) {
+    tabla.querySelector("thead tr").innerHTML = "";
+    tabla.querySelector("tbody").innerHTML = "<tr><td>No hay registros en esta categoría.</td></tr>";
+    document.getElementById(config.idContador).textContent = "";
+    return;
+  }
+
+  const columnas = Object.keys(datosBase[0]);
+
+  /* Encabezados con orden */
+  const thead = tabla.querySelector("thead tr");
+  thead.innerHTML = columnas.map(function (columna) {
+    let claseOrden = "";
+    if (estado.ordenColumna === columna) {
+      claseOrden = estado.ordenAsc ? "ordenAsc" : "ordenDesc";
+    }
+    return "<th class='" + claseOrden + "' onclick=\"ordenarTabla('" + clave + "','" + columna + "')\">" + columna + "</th>";
+  }).join("");
+
+  /* Filtrado (compara representación textual, incluyendo el resumen de diferencias) */
+  let filas = datosBase;
+  if (estado.filtro) {
+    filas = filas.filter(function (registro) {
+      return columnas.some(function (columna) {
+        const valorTexto = columna === "Diferencias"
+          ? formatearValorCelda(columna, registro[columna]).replace(/<[^>]+>/g, "")
+          : String(registro[columna] || "");
+        return valorTexto.toLowerCase().indexOf(estado.filtro) !== -1;
+      });
+    });
+  }
+
+  /* Orden */
+  if (estado.ordenColumna) {
+    const col = estado.ordenColumna;
+    filas = filas.slice().sort(function (a, b) {
+      const valorA = col === "Diferencias" ? (a[col] || []).length : a[col];
+      const valorB = col === "Diferencias" ? (b[col] || []).length : b[col];
+      let comparacion;
+      if (typeof valorA === "number" && typeof valorB === "number") {
+        comparacion = valorA - valorB;
+      } else {
+        comparacion = String(valorA || "").localeCompare(String(valorB || ""));
+      }
+      return estado.ordenAsc ? comparacion : -comparacion;
+    });
+  }
+
+  /* Cuerpo */
+  const tbody = tabla.querySelector("tbody");
+  if (filas.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='" + columnas.length + "'>No se encontraron resultados.</td></tr>";
+  } else {
+    tbody.innerHTML = filas.map(function (registro) {
+      return "<tr>" + columnas.map(function (columna) {
+        return "<td>" + formatearValorCelda(columna, registro[columna]) + "</td>";
+      }).join("") + "</tr>";
+    }).join("");
+  }
+
+  document.getElementById(config.idContador).textContent = filas.length + " de " + datosBase.length + " registros";
 }
 </script>
 
